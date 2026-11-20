@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Física Electromagnética · Semana 5 · Biot-Savart y Ampère</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/black.css">
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+<style>
+:root{--navy:#101B30;--panel:#1D304C;--cyan:#53C7F2;--gold:#F5B544;--white:#F4F7FC;--line:#385674;--green:#78D6B0}
+*{box-sizing:border-box} body{background:#101820}
+.reveal{font-family:Arial,Helvetica,sans-serif;color:var(--white);font-size:27px}
+.reveal .slides{text-align:left}.reveal .slides section{height:100%;padding:2.0vh 2.6vw;box-sizing:border-box;overflow:hidden!important}
+.reveal h1,.reveal h2,.reveal h3{color:var(--cyan);text-transform:none;font-weight:700;letter-spacing:-.02em}
+.reveal h1{font-size:1.75em;margin:.12em 0 .35em}.reveal h2{font-size:1.22em;margin:.1em 0 .45em}.reveal h3{font-size:.82em;color:var(--gold);margin:.15em 0 .35em}
+.reveal p,.reveal li{font-size:.64em;line-height:1.3}.reveal p{margin:.35em 0}.reveal ul,.reveal ol{margin:.25em 0 .35em 1.1em}.reveal li{margin:.2em 0}
+.tag{font-size:.48em;color:var(--gold);letter-spacing:.1em;text-transform:uppercase}.muted{color:#c3d4e6}.small{font-size:.52em!important;color:#c7d7e7}.tiny{font-size:.46em!important;color:#c7d7e7}
+.eq{background:var(--panel);border-left:4px solid var(--cyan);border-radius:9px;padding:10px 14px;margin:9px 0;text-align:center;font-size:.85em;overflow:hidden}
+.callout{background:var(--panel);border-left:4px solid var(--gold);border-radius:7px;padding:9px 13px;margin:9px 0;font-size:.62em;line-height:1.3}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:11px 13px;min-width:0}.card p{margin:.25em 0}.card h3{font-size:.78em}
+.diagram{background:#0d1b2d;border:1px solid var(--line);border-radius:10px;padding:7px}.diagram svg{display:block;width:100%;height:auto;max-height:270px}
+.reveal button,.reveal input,.reveal select{font:inherit}.reveal button{background:#244b6b;color:var(--white);border:1px solid #5a88a8;border-radius:7px;padding:6px 11px;font-size:.55em;cursor:pointer}.reveal button:hover{background:#326487}.reveal input[type=range]{width:100%;accent-color:var(--cyan);cursor:pointer}.reveal input[type=range]:disabled{opacity:.32;cursor:not-allowed;filter:grayscale(1)}.control{display:grid;grid-template-columns:1fr auto;gap:3px 10px;align-items:center;margin:7px 0}.control label{font-size:.54em}.control output{font-size:.54em;color:var(--gold);font-weight:bold}.control input{grid-column:1/-1}
+.readout{background:#0e1b2b;border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:.57em}.readout strong{color:var(--gold)}.steps{font-size:.58em!important;line-height:1.28!important}.hidden-solution[hidden]{display:none}.hidden-solution{background:#10273a;border:1px solid #37637a;border-radius:8px;padding:9px 12px;margin-top:7px;font-size:.58em}
+canvas{display:block;width:100%;height:220px;background:#0b1727;border:1px solid var(--line);border-radius:8px}
+.reveal table{font-size:.58em;width:100%;border-collapse:collapse}.reveal td,.reveal th{padding:6px 8px;border-bottom:1px solid var(--line)}.reveal th{color:var(--gold);text-align:left}
+.footer{position:absolute;bottom:3px;right:15px;font-size:.4em;color:#829ab0}
+@media(max-width:850px){.reveal{font-size:22px}.grid,.grid3{grid-template-columns:1fr 1fr}.reveal .slides section{padding:1vh 2vw}}
+</style>
+</head>
+<body><div class="reveal"><div class="slides">
+<section>
+<div class="tag">Física electromagnética · Semana 5 · 90 minutos</div>
+<h1>Campo magnético: Biot-Savart y Ampère</h1>
+<p>De la corriente eléctrica a la distribución espacial del campo magnético.</p>
+<div class="eq">\[\text{corriente }I\;\longrightarrow\;\vec B\;\longrightarrow\;\text{fuerza e interacción magnética}\]</div>
+<div class="callout"><b>Pregunta guía:</b> ¿cómo determinamos la magnitud y la dirección del campo magnético que produce una corriente, y cuándo conviene usar Biot-Savart o Ampère?</div>
+<p class="small">Clase universitaria · Ingeniería · Presentación interactiva</p>
+<aside class="notes">Apertura (2 min). Recuperar que una corriente es movimiento ordenado de cargas. La sesión se centra en el campo que esa corriente produce. Distinguir este campo B del campo eléctrico estudiado en semanas anteriores.</aside>
+</section>
+<section><h2>Objetivos y ruta de trabajo</h2>
+<div class="grid3">
+<div class="card"><h3>1 · Origen de B</h3><p>Interpretar cómo una corriente produce un campo magnético alrededor del conductor.</p></div>
+<div class="card"><h3>2 · Biot-Savart</h3><p>Relacionar cada elemento de corriente con su contribución al campo total.</p></div>
+<div class="card"><h3>3 · Geometrías</h3><p>Calcular B para un hilo recto y una espira circular.</p></div>
+<div class="card"><h3>4 · Ampère</h3><p>Usar la simetría y la circulación para obtener el campo.</p></div>
+<div class="card"><h3>5 · Aplicaciones</h3><p>Analizar conductores cilíndricos y solenoides.</p></div>
+<div class="card"><h3>6 · Verificación</h3><p>Resolver situaciones nuevas, revisar unidades y justificar resultados.</p></div>
+</div>
+<div class="callout">Distribución sugerida: 10 min conceptos y dirección · 25 min Biot-Savart · 25 min Ampère y conductor cilíndrico · 15 min solenoide · 15 min práctica y síntesis.</div>
+<aside class="notes">Explicar que las dos leyes no compiten: Biot-Savart es más general para corrientes estacionarias; Ampère es especialmente eficiente cuando la simetría permite simplificar la integral.</aside></section>
+<section><h2>¿Qué produce el campo magnético?</h2>
+<div class="grid">
+<div><p>Una corriente eléctrica es una distribución de cargas en movimiento. Ese movimiento genera un campo magnético \(\vec B\) en el espacio que rodea al conductor.</p>
+<ul><li>El campo es vectorial: tiene magnitud, dirección y sentido.</li><li>Su dirección depende del sentido convencional de la corriente.</li><li>Las líneas de campo rodean al conductor; no salen radialmente de él.</li></ul>
+<div class="eq">\[\text{Unidad de }B:\quad 1\;\mathrm T=1\;\frac{\mathrm N}{\mathrm{A\,m}}\]</div></div>
+<div class="diagram"><svg viewBox="0 0 480 270" role="img" aria-label="Conductor recto con corriente y líneas magnéticas circulares"><defs><marker id="arrA" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6" fill="#53C7F2"/></marker></defs><path d="M240 25 L240 245" stroke="#d7e5f4" stroke-width="20" stroke-linecap="round"/><path d="M240 210 L240 65" stroke="#F5B544" stroke-width="4" marker-end="url(#arrA)"/><g fill="none" stroke="#53C7F2" stroke-width="3"><ellipse cx="240" cy="145" rx="65" ry="25"/><ellipse cx="240" cy="145" rx="112" ry="43"/><ellipse cx="240" cy="145" rx="160" ry="61"/></g><g fill="#F4F7FC" font-size="17"><text x="260" y="52">I</text><text x="318" y="115">B</text><text x="18" y="254">Líneas circulares alrededor del hilo</text></g></svg></div>
+</div>
+<div class="callout"><b>Regla de la mano derecha:</b> apunta el pulgar en el sentido de la corriente; los dedos curvados indican el sentido de las líneas de \(\vec B\).</div>
+<aside class="notes">Usar el dibujo como vista esquemática: el hilo se representa vertical y las elipses representan circunferencias alrededor de su eje. La flecha amarilla señala I. La orientación real de B se determina con la mano derecha.</aside></section>
+<section><h2>Dirección del campo: regla de la mano derecha</h2>
+<div class="grid">
+<div class="card"><h3>Corriente hacia arriba</h3><div class="diagram"><svg viewBox="0 0 300 190"><path d="M150 160 V28" stroke="#F5B544" stroke-width="8"/><path d="M139 45 L150 25 L161 45" fill="none" stroke="#F5B544" stroke-width="5"/><ellipse cx="150" cy="105" rx="90" ry="35" fill="none" stroke="#53C7F2" stroke-width="4"/><path d="M235 105 l-15 -8 v16z" fill="#53C7F2"/><text x="166" y="35" fill="white" font-size="16">I</text><text x="15" y="180" fill="white" font-size="14">Vista esquemática</text></svg></div><p>Con el pulgar hacia arriba, los dedos indican el sentido de circulación de \(\vec B\).</p></div>
+<div class="card"><h3>Corriente hacia abajo</h3><div class="diagram"><svg viewBox="0 0 300 190"><path d="M150 28 V160" stroke="#F5B544" stroke-width="8"/><path d="M139 143 L150 165 L161 143" fill="none" stroke="#F5B544" stroke-width="5"/><ellipse cx="150" cy="105" rx="90" ry="35" fill="none" stroke="#53C7F2" stroke-width="4"/><path d="M65 105 l15 -8 v16z" fill="#53C7F2"/><text x="166" y="155" fill="white" font-size="16">I</text><text x="15" y="180" fill="white" font-size="14">El sentido de B se invierte</text></svg></div><p>Al invertir la corriente, se invierte el sentido del campo magnético.</p></div>
+</div>
+<div class="callout">No confundas la dirección de \(\vec B\) con la fuerza magnética sobre una carga. La fuerza depende además del signo y de la velocidad de la carga.</div>
+<aside class="notes">Pedir a los estudiantes que indiquen qué ocurre con B si se invierte la batería. Aclarar que los esquemas son representaciones de la regla de la mano derecha, no una vista literal de los dedos.</aside></section>
+<section><h2>Ley de Biot-Savart: contribución de un elemento de corriente</h2>
+<p>Un pequeño tramo de conductor recorrido por corriente aporta una pequeña contribución al campo magnético en el punto de observación. La contribución depende de la corriente, la longitud y orientación del tramo, y la distancia al punto.</p>
+<div class="eq">\[d\vec B=\frac{\mu_0}{4\pi}\,\frac{I\,d\vec\ell\times\hat r}{r^2}\]</div>
+<div class="grid3">
+<div class="card"><h3>\(I\,d\vec\ell\)</h3><p>Elemento de corriente. \(d\vec\ell\) apunta en el sentido convencional de I.</p></div>
+<div class="card"><h3>\(r\) y \(\hat r\)</h3><p>Distancia desde el elemento hasta el punto, y vector unitario que apunta hacia ese punto.</p></div>
+<div class="card"><h3>Producto cruz</h3><p>Determina la dirección de \(d\vec B\). Su magnitud incluye el factor \(\sin\theta\).</p></div>
+</div>
+<div class="eq">\[dB=\frac{\mu_0}{4\pi}\frac{I\,d\ell\,\sin\theta}{r^2}\qquad\mu_0\approx4\pi\times10^{-7}\;\mathrm{T\,m/A}\]</div>
+<p class="small">El campo total se obtiene sumando vectorialmente las contribuciones de todos los elementos de corriente mediante una integral.</p>
+<aside class="notes">Explicar cada símbolo sin saltar directamente a la fórmula integrada. El producto cruz implica perpendicularidad y sentido dado por la regla de la mano derecha. Para corrientes estacionarias en conductores, se integra a lo largo de la trayectoria de corriente.</aside></section>
+<section><h2>Del elemento de corriente al campo total</h2>
+<div class="grid">
+<div><p>La ley de Biot-Savart se aplica a toda la geometría del conductor. Cada elemento aporta un vector y el resultado es la suma de todas esas contribuciones.</p>
+<div class="eq">\[\vec B=\frac{\mu_0 I}{4\pi}\int\frac{d\vec\ell\times\hat r}{r^2}\]</div>
+<ul><li>La integral recorre el conductor.</li><li>La dirección de cada contribución puede cambiar de un punto a otro.</li><li>La simetría permite simplificar la suma en geometrías especiales.</li></ul></div>
+<div class="diagram"><svg viewBox="0 0 480 250"><defs><marker id="arrB" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6" fill="#F5B544"/></marker></defs><path d="M55 205 Q230 30 420 205" fill="none" stroke="#53C7F2" stroke-width="7"/><path d="M214 112 L242 84" stroke="#F5B544" stroke-width="4" marker-end="url(#arrB)"/><circle cx="310" cy="70" r="6" fill="#F5B544"/><path d="M214 112 L310 70" stroke="#F4F7FC" stroke-dasharray="6 5" stroke-width="2"/><path d="M214 112 L239 132" stroke="#F5B544" stroke-width="3"/><text x="248" y="75" fill="white" font-size="17">dℓ</text><text x="320" y="66" fill="white" font-size="17">P</text><text x="264" y="103" fill="white" font-size="16">r</text><text x="20" y="238" fill="white" font-size="14">Cada tramo aporta un dB en el punto P</text></svg></div>
+</div>
+<div class="callout">Biot-Savart es útil cuando podemos describir la geometría de la corriente y sumar sus contribuciones. Para un hilo recto largo, la integral conduce a una expresión especialmente sencilla.</div>
+<aside class="notes">Mostrar el esquema como una curva conductora y un punto P. No interpretar dℓ como una distancia escalar: es un vector tangente al conductor.</aside></section>
+<section><h2>Campo magnético de un conductor rectilíneo largo</h2>
+<p>Al integrar Biot-Savart para un hilo recto muy largo, el campo forma circunferencias concéntricas alrededor del conductor y su magnitud depende inversamente de la distancia radial.</p>
+<div class="eq">\[B(r)=\frac{\mu_0 I}{2\pi r}\]</div>
+<div class="grid">
+<div class="card"><h3>Lectura física</h3><ul><li>Si I se duplica, B se duplica.</li><li>Si r se duplica, B se reduce a la mitad.</li><li>El campo es tangente a las circunferencias centradas en el hilo.</li></ul></div>
+<div class="card"><h3>Condiciones del modelo</h3><p>Conductor recto, muy largo respecto a la distancia de observación, corriente estacionaria y medio con permeabilidad aproximadamente igual a \(\mu_0\).</p></div>
+</div>
+<div class="callout">Esta expresión describe puntos exteriores a un hilo ideal delgado. Si el conductor tiene radio apreciable y la corriente ocupa su sección, debemos distinguir el interior del exterior.</div>
+<aside class="notes">Ejemplo oral rápido: ¿qué sucede con B si duplico I y triplico r? Respuesta: B queda en 2/3 del valor inicial.</aside></section>
+<section><h2>Ejemplo resuelto · Campo alrededor de un hilo</h2>
+<p>Un conductor recto y muy largo transporta una corriente de <b>4.5 A</b>. Determina la magnitud del campo magnético a <b>3.0 cm</b> de su eje.</p>
+<div class="eq">\[B=\frac{(4\pi\times10^{-7})(4.5)}{2\pi(0.030)}\]</div>
+<div class="eq">\[B=3.0\times10^{-5}\;\mathrm T=30\;\mu\mathrm T\]</div>
+<div class="grid">
+<div class="card"><h3>Antes de calcular</h3><p>Convertimos la distancia: \(3.0\,\mathrm{cm}=0.030\,\mathrm m\). La corriente ya está en amperios.</p></div>
+<div class="card"><h3>Interpretación</h3><p>El resultado es una magnitud positiva. El sentido del campo se determina por la regla de la mano derecha, no por el signo de B.</p></div>
+</div>
+<aside class="notes">Resolver paso a paso. Revisar unidades: T·m/A × A / m = T. El valor se mantiene dentro del orden de magnitud esperado para corrientes de unos amperios a centímetros.</aside></section>
+<section><h2>Simulación 1 · Campo de un hilo recto</h2>
+<p>Elige qué variable quieres estudiar. El color del campo se actualiza según el valor calculado de \(B\); el punto de observación se desplaza cuando varía \(r\).</p>
+<div class="card" style="padding:12px 14px;margin-bottom:9px">
+<div class="grid" style="grid-template-columns:1fr 1fr;gap:12px;align-items:center">
+<div>
+<div class="control"><label for="wireI">Corriente I</label><output id="wireIVal">14.0 A</output><input id="wireI" type="range" min="0.5" max="15" step="0.5" value="14"></div>
+<div class="control"><label for="wireR">Radio / distancia r</label><output id="wireRVal">8.0 cm</output><input id="wireR" type="range" min="0.5" max="10" step="0.5" value="8"></div>
+<div class="readout">Campo magnético en el punto: <strong id="wireB">3.50 × 10⁻⁵ T</strong><br>Relación: <strong>\(B=\dfrac{\mu_0 I}{2\pi r}\)</strong></div>
+<p class="tiny" id="wireCompare">Aumentar I fortalece el campo; aumentar r lo debilita.</p>
+</div>
+<div class="diagram" style="padding:5px">
+<svg id="wireViz" viewBox="0 0 430 245" role="img" aria-label="Un único círculo de campo magnético alrededor de un hilo recto; su radio representa la distancia r del conductor al punto de observación">
+<defs><filter id="wireGlow" x="-200%" y="-200%" width="400%" height="400%"><feGaussianBlur stdDeviation="5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+<path d="M215 18 V226" stroke="#F5B544" stroke-width="18" stroke-linecap="round"/>
+<path d="M215 185 V55" stroke="#101B30" stroke-width="4"/>
+<path d="M205 68 L215 48 L225 68" stroke="#101B30" stroke-width="4" fill="none"/>
+<text x="235" y="42" fill="#F4F7FC" font-size="16">I</text>
+<ellipse id="wireRing" cx="215" cy="122" rx="105" ry="42" fill="none" stroke="#53C7F2" stroke-width="4"/>
+<path id="wireRadiusLine" d="M215 122 H320" stroke="#F5B544" stroke-width="2" stroke-dasharray="6 5"/>
+<circle id="wireObserverHalo" cx="320" cy="122" r="13" fill="#53C7F2" opacity=".25" filter="url(#wireGlow)"/>
+<circle id="wireObserver" cx="320" cy="122" r="7" fill="#53C7F2" stroke="#F4F7FC" stroke-width="2"/>
+<text id="wireRLabel" x="275" y="108" fill="#F5B544" font-size="15">r = 8.0 cm</text>
+<text x="22" y="232" fill="#F4F7FC" font-size="13">Una circunferencia de campo y un punto de observación</text>
+</svg>
+<div style="display:flex;align-items:center;gap:7px;font-size:.43em;margin:3px 4px 0"><span>Débil</span><div style="height:10px;flex:1;border-radius:8px;background:linear-gradient(90deg,#17304c,#53C7F2,#F5B544,#F05B55)"></div><span>Intenso</span></div>
+</div></div>
+<div class="small" style="margin-top:8px">El círculo representa una línea de campo magnético. Su radio aumenta o disminuye con r; el punto señala dónde se calcula B. El color cambia según la magnitud calculada del campo.</div>
+</div>
+<aside class="notes">La simulación corresponde al campo de un hilo recto, largo y delgado: B=μ₀I/(2πr). No confundir con la contribución elemental dB de Biot-Savart, que depende de r² y del ángulo. En el modo de corriente se mantiene r fijo; en el modo de distancia se mantiene I fija y se mueve el punto de observación sobre una dirección radial. El color se calcula a partir de B, no del control seleccionado. El esquema no está a escala métrica.</aside></section>
+<section><h2>Campo en el centro de una espira circular</h2>
+<p>En una espira circular, cada elemento de corriente produce una contribución al campo en el centro. Por simetría, las componentes laterales se cancelan y las componentes perpendiculares al plano se suman.</p>
+<div class="eq">\[B_{\mathrm{centro}}=\frac{\mu_0 I}{2R}\]</div>
+<div class="grid">
+<div class="diagram"><svg viewBox="0 0 520 300" role="img" aria-label="Esquema en perspectiva de una espira circular: corriente I recorre el aro, R es el radio desde el centro hasta el conductor y el campo magnético B sale perpendicular al plano por el centro">
+<defs>
+ <marker id="loopArrowCyan" markerWidth="8" markerHeight="8" refX="5" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6" fill="#53C7F2"/></marker>
+ <marker id="loopArrowGold" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0 L7 3 L0 6" fill="#F5B544"/></marker>
+</defs>
+<!-- Eje normal al plano de la espira -->
+<path d="M260 164 L260 32" stroke="#F5B544" stroke-width="2.5" stroke-dasharray="6 6" opacity=".75"/>
+<path d="M260 164 L260 48" stroke="#F5B544" stroke-width="5" marker-end="url(#loopArrowGold)"/>
+<text x="276" y="55" fill="#F5B544" font-size="20" font-weight="bold">B</text>
+<text x="278" y="76" fill="#F4F7FC" font-size="13">Campo en el centro</text>
+<!-- Espira circular en perspectiva -->
+<ellipse cx="260" cy="166" rx="174" ry="75" fill="#53C7F2" fill-opacity=".06" stroke="#53C7F2" stroke-width="8"/>
+<!-- Flechas tangenciales que indican la corriente -->
+<path d="M105 118 Q130 96 165 96" fill="none" stroke="#53C7F2" stroke-width="4" marker-end="url(#loopArrowCyan)"/>
+<path d="M414 213 Q386 238 350 239" fill="none" stroke="#53C7F2" stroke-width="4" marker-end="url(#loopArrowCyan)"/>
+<path d="M424 119 Q440 139 437 158" fill="none" stroke="#53C7F2" stroke-width="4" marker-end="url(#loopArrowCyan)"/>
+<text x="105" y="86" fill="#53C7F2" font-size="18" font-weight="bold">I</text>
+<!-- Centro y radio -->
+<circle cx="260" cy="166" r="7" fill="#F5B544" stroke="#F4F7FC" stroke-width="1.5"/>
+<text x="274" y="183" fill="#F4F7FC" font-size="13">Centro</text>
+<path d="M260 166 L399 211" stroke="#F5B544" stroke-width="3" marker-end="url(#loopArrowGold)"/>
+<text x="330" y="174" fill="#F5B544" font-size="19" font-weight="bold">R</text>
+<circle cx="399" cy="211" r="5" fill="#F5B544"/>
+<text x="260" y="282" text-anchor="middle" fill="#F4F7FC" font-size="15">La corriente recorre el aro; B apunta perpendicularmente a su plano.</text>
+</svg></div>
+<div class="card"><h3>Qué representa cada símbolo</h3><ul><li>\(I\): corriente que recorre la espira.</li><li>\(R\): radio de la circunferencia.</li><li>\(\mu_0\): permeabilidad magnética del vacío.</li></ul><p>Al aumentar I, el campo crece. Al aumentar R, el campo en el centro disminuye.</p></div>
+</div>
+<div class="callout">Para una bobina de N espiras muy próximas, el campo en el centro se multiplica aproximadamente por N: \(B=\mu_0NI/(2R)\).</div>
+<aside class="notes">Aclarar que la fórmula corresponde al centro geométrico de una espira circular delgada. El sentido de B se obtiene con la mano derecha: dedos en el sentido de I y pulgar en la dirección del campo en el centro.</aside></section>
+<section><h2>Ley de Ampère: forma integral y forma diferencial</h2>
+<p>La ley de Ampère relaciona la circulación del campo magnético alrededor de una trayectoria cerrada con la corriente que atraviesa la superficie delimitada por ella. Podemos expresarla de dos maneras equivalentes, según la información que queramos describir.</p>
+<div class="grid">
+<div class="card">
+<h3>1. Forma integral</h3>
+<p>Describe el campo magnético acumulado a lo largo de una trayectoria cerrada:</p>
+<div class="eq">\[\oint_C \vec B\cdot d\vec\ell=\mu_0 I_{\mathrm{enc}}\]</div>
+<p>El producto punto toma la componente de \(\vec B\) tangente a cada pequeño tramo del recorrido. La integral suma esas contribuciones alrededor de toda la curva.</p>
+</div>
+<div class="card">
+<h3>2. Forma diferencial (magnetostática)</h3>
+<p>Describe cómo se relaciona localmente el campo con la densidad de corriente en cada punto:</p>
+<div class="eq">\[\nabla\times\vec B=\mu_0\vec J\]</div>
+<p>El rotacional mide la tendencia local del campo a circular. \(\vec J\) es la densidad de corriente: corriente por unidad de área, con dirección del flujo de carga.</p>
+</div>
+</div>
+<div class="callout"><strong>¿Cuándo usamos cada una?</strong> La forma integral suele ser más práctica para calcular \(B\) cuando existe simetría, por ejemplo alrededor de un hilo recto. La forma diferencial permite analizar la relación local entre el campo y la corriente.</div>
+<div class="card">
+<h3>Conexión con Ampère-Maxwell</h3>
+<p>La expresión anterior corresponde al caso magnetostático, en el que los campos no varían con el tiempo. Si el campo eléctrico cambia con el tiempo, Maxwell incorpora la corriente de desplazamiento:</p>
+<div class="eq">\[\oint_C\vec B\cdot d\vec\ell=\mu_0 I_{\mathrm{enc}}+\mu_0\varepsilon_0\frac{d\Phi_E}{dt}\]</div>
+<div class="eq">\[\nabla\times\vec B=\mu_0\vec J+\mu_0\varepsilon_0\frac{\partial\vec E}{\partial t}\]</div>
+<p>Este término adicional permite describir situaciones como la región entre las placas de un condensador mientras se está cargando, donde puede existir campo eléctrico variable aunque no haya corriente de conducción atravesando el espacio entre las placas.</p>
+</div>
+<aside class="notes">Aclarar que las formas integral y diferencial de Ampère magnetostática expresan la misma ley a distintas escalas: una sobre una curva cerrada y la otra punto a punto. La versión completa de Ampère-Maxwell añade el término de desplazamiento cuando el campo eléctrico varía en el tiempo.</aside></section>
+<section><h2>¿Cómo se elige una trayectoria amperiana?</h2>
+<div class="grid">
+<div class="diagram"><svg viewBox="0 0 420 250"><path d="M210 18 V230" stroke="#F5B544" stroke-width="16"/><ellipse cx="210" cy="125" rx="140" ry="55" fill="none" stroke="#53C7F2" stroke-width="4" stroke-dasharray="9 6"/><path d="M347 125 l-18 -10 v20z" fill="#53C7F2"/><text x="230" y="30" fill="white" font-size="16">Conductor</text><text x="45" y="220" fill="white" font-size="15">Trayectoria cerrada C</text></svg></div>
+<div><p>La trayectoria no es un objeto físico: es una curva matemática que elegimos para aprovechar la simetría del campo.</p>
+<ol><li>Identifica el eje o centro de simetría del conductor.</li><li>Elige una curva donde B tenga dirección tangente.</li><li>Busca que la magnitud de B sea constante sobre esa curva.</li><li>Determina qué corriente atraviesa la superficie limitada por C.</li></ol></div>
+</div>
+<div class="eq">\[\oint_C\vec B\cdot d\vec\ell=B\oint_Cd\ell=B(2\pi r)\]</div>
+<p class="small">La última igualdad solo es válida cuando B es tangente y tiene magnitud constante a lo largo de la circunferencia.</p>
+<aside class="notes">Subrayar que no se puede sacar B de la integral en cualquier geometría. Es la simetría del problema la que justifica esa simplificación.</aside></section>
+<section><h2>Hilo recto largo: Ampère recupera el mismo resultado</h2>
+<p>Para un hilo recto largo, elegimos una circunferencia de radio r centrada en el conductor. Por simetría, B es tangente y tiene el mismo valor en toda la trayectoria.</p>
+<div class="eq">\[B(2\pi r)=\mu_0 I\qquad\Rightarrow\qquad B=\frac{\mu_0 I}{2\pi r}\]</div>
+<div class="callout">Es la misma expresión que obtuvimos con Biot-Savart. La diferencia está en el camino matemático: Biot-Savart suma aportes de elementos de corriente; Ampère aprovecha la simetría de la distribución.</div>
+<div class="grid">
+<div class="card"><h3>Usa Biot-Savart</h3><p>Cuando necesitas integrar contribuciones y la geometría puede no tener una trayectoria amperiana sencilla.</p></div>
+<div class="card"><h3>Usa Ampère</h3><p>Cuando la simetría permite conocer la dirección y mantener constante la magnitud de B sobre una curva cerrada.</p></div>
+</div>
+<aside class="notes">Pregunta: ¿por qué no basta con conocer Ienc para hallar B en cualquier problema? Porque la ley determina la circulación, no necesariamente el valor puntual del campo si no hay simetría suficiente.</aside></section>
+<section><h2>Conductor cilíndrico macizo con corriente uniforme</h2>
+<p>Si la corriente total I se distribuye uniformemente sobre la sección transversal de radio R, la densidad de corriente es constante.</p>
+<div class="eq">\[J=\frac{I}{\pi R^2}\]<br>\[I_{\mathrm{enc}}(r)=J\pi r^2=I\frac{r^2}{R^2},\qquad r\lt R\]</div>
+<div class="grid">
+<div class="card"><h3>Dentro del conductor: \(r\lt R\)</h3><p>La trayectoria amperiana encierra solo una fracción de la corriente total:</p><div class="eq">\[B(r)=\frac{\mu_0 I}{2\pi R^2}\,r\]</div><p>El campo crece linealmente desde el eje.</p></div>
+<div class="card"><h3>Fuera del conductor: \(r\ge R\)</h3><p>La trayectoria encierra toda la corriente:</p><div class="eq">\[B(r)=\frac{\mu_0 I}{2\pi r}\]</div><p>El campo disminuye como \(1/r\).</p></div>
+</div>
+<div class="callout">En la superficie \(r=R\), ambas expresiones coinciden: \(B(R)=\mu_0 I/(2\pi R)\). El campo es continuo al pasar del interior al exterior.</div>
+<aside class="notes">Derivar la corriente encerrada con densidad uniforme. No confundir el radio del conductor R con la distancia radial r. El caso del examen usa un conductor de radio 1 cm y punto de observación a 2 cm: es exterior.</aside></section>
+<section><h2>Simulación 2 · Campo dentro y fuera del conductor</h2>
+<p>Desplaza el punto de observación desde el eje hasta el exterior. Observa el cambio de régimen y la continuidad en la superficie.</p>
+<div class="grid">
+<div class="card">
+<div class="control"><label for="cylI">Corriente total I</label><output id="cylIVal">6.0 A</output><input id="cylI" type="range" min="1" max="15" step="0.5" value="6"></div>
+<div class="control"><label for="cylR">Radio del conductor R</label><output id="cylRVal">1.5 cm</output><input id="cylR" type="range" min="0.5" max="3" step="0.1" value="1.5"></div>
+<div class="control"><label for="cylr">Posición radial r</label><output id="cylrVal">0.8 cm</output><input id="cylr" type="range" min="0" max="6" step="0.1" value="0.8"></div>
+<div class="readout">Región: <strong id="cylRegion">Interior</strong><br>Corriente encerrada: <strong id="cylEnc">1.71 A</strong><br>Campo magnético: <strong id="cylB">—</strong></div>
+</div>
+<div class="card"><canvas id="cylPlot" width="650" height="330" aria-label="Gráfica del campo magnético según la distancia radial"></canvas><p class="tiny">Gráfica B(r): crecimiento lineal dentro y descenso inverso fuera.</p></div>
+</div>
+<aside class="notes">Los sliders actualizan B, Ienc y la gráfica. Explicar el cambio de pendiente en r=R sin salto en el valor del campo. Pedir que muevan r manteniendo I y R fijos.</aside></section>
+<section><h2>Ejemplo resuelto · Punto dentro de un conductor</h2>
+<p>Un conductor cilíndrico macizo de radio <b>1.5 cm</b> transporta una corriente uniforme de <b>6.0 A</b>. Determina B a <b>0.75 cm</b> del eje.</p>
+<div class="eq">\[B=\frac{\mu_0 I r}{2\pi R^2}\]</div>
+<div class="eq">\[B=\frac{(4\pi\times10^{-7})(6.0)(0.0075)}{2\pi(0.015)^2}=4.0\times10^{-5}\;\mathrm T\]</div>
+<div class="grid"><div class="card"><h3>Decisión clave</h3><p>Como \(r=0.75\,\mathrm{cm}<R=1.5\,\mathrm{cm}\), el punto está dentro del conductor. No usamos la expresión exterior.</p></div><div class="card"><h3>Interpretación</h3><p>Solo se encierra una parte de la corriente total. Al acercarnos al eje, B disminuye linealmente y en el centro vale cero por simetría.</p></div></div>
+<aside class="notes">Verificar unidades SI y sustitución. La corriente encerrada es I(r/R)^2 = 1.5 A. B=μ0 Ienc/(2πr) da el mismo valor.</aside></section>
+<section><h2>Solenoide largo: campo en su interior</h2>
+<p>Un solenoide es una bobina cilíndrica con muchas espiras próximas. En un solenoide suficientemente largo, los campos de las espiras se suman y producen un campo casi uniforme en su interior.</p>
+<div class="eq">\[B\approx\mu_0 nI=\mu_0\frac{N}{L}I\]</div>
+<div class="grid">
+<div class="diagram"><svg viewBox="0 0 470 250"><path d="M85 70 C85 35 385 35 385 70 V180 C385 215 85 215 85 180 Z" fill="none" stroke="#53C7F2" stroke-width="4"/><g stroke="#F5B544" stroke-width="3" fill="none"><path d="M95 70 V180 Q105 195 115 180 V70 Q125 55 135 70 V180 Q145 195 155 180 V70 Q165 55 175 70 V180 Q185 195 195 180 V70 Q205 55 215 70 V180 Q225 195 235 180 V70 Q245 55 255 70 V180 Q265 195 275 180 V70 Q285 55 295 70 V180 Q305 195 315 180 V70 Q325 55 335 70 V180 Q345 195 355 180 V70 Q365 55 375 70"/></g><path d="M145 125 H330" stroke="#53C7F2" stroke-width="5"/><path d="M315 114 L335 125 L315 136" fill="none" stroke="#53C7F2" stroke-width="5"/><text x="210" y="108" fill="white" font-size="17">B casi uniforme</text><text x="185" y="238" fill="white" font-size="15">N espiras en longitud L</text></svg></div>
+<div class="card"><h3>Variables</h3><ul><li>\(N\): número total de vueltas.</li><li>\(L\): longitud del solenoide.</li><li>\(n=N/L\): vueltas por unidad de longitud.</li><li>\(I\): corriente en cada espira.</li></ul><p>El campo exterior es mucho menor que el interior cuando el solenoide es largo.</p></div>
+</div>
+<div class="callout">La fórmula supone un solenoide largo, espiras uniformemente distribuidas y un núcleo de aire o vacío. Con un material magnético, la permeabilidad efectiva cambia.</div>
+<aside class="notes">Relacionar con Ampère: se elige un rectángulo que atraviesa el interior y el exterior. En el interior B es aproximadamente constante y paralelo al tramo; en el exterior se desprecia para un solenoide ideal largo.</aside></section>
+<section><h2>Ejemplo resuelto · Campo en un solenoide</h2>
+<p>Un solenoide de <b>450 vueltas</b> y longitud <b>0.30 m</b> conduce una corriente de <b>0.80 A</b>. Estima el campo magnético en su región central.</p>
+<div class="eq">\[n=\frac{N}{L}=\frac{450}{0.30}=1500\;\mathrm{vueltas/m}\]</div>
+<div class="eq">\[B=\mu_0nI=(4\pi\times10^{-7})(1500)(0.80)\]</div>
+<div class="eq">\[B\approx1.51\times10^{-3}\;\mathrm T=1.51\;\mathrm{mT}\]</div>
+<div class="callout">Si duplicamos el número de vueltas por metro o la corriente, el campo se duplica. Si mantenemos N y aumentamos L, n disminuye y el campo también.</div>
+<aside class="notes">Insistir en que n es vueltas por metro, no el número total de vueltas. Convertir 0.30 m ya está en SI. Dar sentido a la proporcionalidad.</aside></section>
+<section><h2>Simulación 3 · Diseña un solenoide</h2>
+<p>Ajusta el número de vueltas, la longitud y la corriente. El indicador muestra cómo cambia el campo central ideal.</p>
+<div class="grid">
+<div class="card">
+<div class="control"><label for="solN">Número de vueltas N</label><output id="solNVal">400</output><input id="solN" type="range" min="100" max="1200" step="25" value="400"></div>
+<div class="control"><label for="solL">Longitud L</label><output id="solLVal">0.30 m</output><input id="solL" type="range" min="0.1" max="0.8" step="0.01" value="0.3"></div>
+<div class="control"><label for="solI">Corriente I</label><output id="solIVal">0.80 A</output><input id="solI" type="range" min="0.1" max="3" step="0.05" value="0.8"></div>
+<div class="readout">Densidad de vueltas: <strong id="soln">1333 vueltas/m</strong><br>Campo central: <strong id="solB">1.34 mT</strong></div>
+</div>
+<div class="diagram"><svg id="solViz" viewBox="0 0 440 250"><rect x="55" y="60" width="330" height="130" rx="60" fill="none" stroke="#53C7F2" stroke-width="3"/><g id="solTurns" stroke="#F5B544" stroke-width="3"></g><path d="M110 125 H335" stroke="#53C7F2" stroke-width="5"/><path d="M320 113 L340 125 L320 137" stroke="#53C7F2" stroke-width="4" fill="none"/><text x="185" y="105" fill="white" font-size="17">B interior</text><text x="160" y="225" fill="white" font-size="15">Bobina esquemática</text></svg></div>
+</div>
+<aside class="notes">El dibujo cambia la cantidad visual de vueltas de forma proporcional, mientras los resultados numéricos se calculan exactamente con la expresión ideal. Explicar que el modelo no calcula efectos de borde.</aside></section>
+<section><h2>Fuerza magnética sobre una carga en movimiento</h2>
+<p>El campo magnético también ejerce una fuerza sobre una partícula cargada que se mueve. La fuerza depende de la carga, la velocidad y la orientación relativa entre la velocidad y el campo.</p>
+<div class="eq">\[\vec F_B=q\,\vec v\times\vec B\qquad F_B=|q|vB\sin\theta\]</div>
+<div class="grid">
+<div class="card"><h3>Magnitud</h3><ul><li>Si la velocidad es paralela a B, \(F_B=0\).</li><li>Si es perpendicular, la fuerza alcanza \(|q|vB\).</li><li>La fuerza es perpendicular a la velocidad y al campo.</li></ul></div>
+<div class="card"><h3>Dirección y signo</h3><p>Para una carga positiva, usa la regla de la mano derecha en \(\vec v\times\vec B\). Para una carga negativa, invierte el sentido obtenido.</p></div>
+</div>
+<div class="callout">A diferencia de la fuerza eléctrica, la fuerza magnética sobre una partícula no aumenta ni disminuye su rapidez instantánea: al ser perpendicular a la velocidad, cambia su dirección de movimiento.</div>
+<aside class="notes">Esta diapositiva conecta con los ítems de fuerza magnética del examen. Distinguir el campo B generado por corrientes (tema central) de la fuerza que B ejerce sobre una carga móvil. El ángulo θ es el que forman v y B.</aside></section>
+<section><h2>Ejemplo · Dirección y magnitud de la fuerza magnética</h2>
+<p>Una partícula con carga \(q=+3.0\,\mu\mathrm C\) se mueve a \(4.0\times10^3\,\mathrm{m/s}\) en dirección \(+\hat x\). En la región hay un campo uniforme \(B=0.20\,\mathrm T\) en dirección \(+\hat y\). Determina la fuerza.</p>
+<div class="eq">\[F_B=|q|vB\sin90^\circ=(3.0\times10^{-6})(4.0\times10^3)(0.20)\]</div>
+<div class="eq">\[F_B=2.4\times10^{-3}\;\mathrm N\qquad\vec F_B\text{ apunta en }+\hat z\]</div>
+<div class="diagram"><svg viewBox="0 0 500 190"><defs><marker id="marr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0 0 L7 3 L0 6" fill="#53C7F2"/></marker></defs><circle cx="235" cy="105" r="13" fill="#F5B544"/><path d="M235 105 H405" stroke="#53C7F2" stroke-width="5" marker-end="url(#marr)"/><path d="M235 105 V20" stroke="#F5B544" stroke-width="5" marker-end="url(#marr)"/><circle cx="235" cy="105" r="28" fill="none" stroke="#F4F7FC" stroke-width="2"/><text x="415" y="112" fill="white" font-size="18">v (+x)</text><text x="250" y="27" fill="white" font-size="18">B (+y)</text><text x="260" y="145" fill="white" font-size="16">F (+z, sale de la pantalla)</text></svg></div>
+<div class="callout">Si la carga fuera negativa, la magnitud sería la misma, pero la fuerza apuntaría hacia \(-\hat z\).</div>
+<aside class="notes">Usar el producto cruz unitario: x̂ × ŷ = ẑ. Luego recordar que el signo de q invierte la dirección. Las componentes de la velocidad y del campo no se suman como escalares.</aside></section>
+<section><h2>Unidades del campo magnético: tesla y gauss</h2>
+<p>En el Sistema Internacional, el campo magnético se mide en teslas (T). En el sistema cegesimal electromagnético se utiliza con frecuencia el gauss (G).</p>
+<div class="eq">\[1\;\mathrm T=10^4\;\mathrm G\qquad\Longleftrightarrow\qquad1\;\mathrm G=10^{-4}\;\mathrm T\]</div>
+<div class="grid">
+<div class="card"><h3>Ejemplo de conversión</h3><p>Un campo de \(2.5\,\mathrm G\) equivale a:</p><div class="eq">\[B=2.5\times10^{-4}\;\mathrm T\]</div></div>
+<div class="card"><h3>Por qué importa</h3><p>Al resolver problemas, todas las magnitudes deben estar en un sistema coherente. Si usamos \(\mu_0\) en unidades SI, convertimos G a T antes de calcular.</p></div>
+</div>
+<div class="callout">El tesla también puede expresarse como \(\mathrm{T=N/(A\,m)}\). Esta unidad se deduce de la fuerza magnética sobre un conductor o una carga móvil.</div>
+<aside class="notes">La conversión 1 T = 10^4 G aparece explícitamente en el examen. En los ejercicios numéricos de fuerza magnética, convertir también cm/s a m/s y microcoulombs a coulombs.</aside></section>
+<section><h2>Cómo decidir entre Biot-Savart y Ampère</h2>
+<table><tr><th>Situación</th><th>Herramienta conveniente</th><th>Razón</th></tr>
+<tr><td>Hilo recto largo</td><td>Ampère o Biot-Savart</td><td>La simetría circular simplifica ambas rutas.</td></tr>
+<tr><td>Espira circular, campo en el centro</td><td>Biot-Savart</td><td>Se suman las contribuciones de cada elemento de la espira.</td></tr>
+<tr><td>Conductor cilíndrico con corriente uniforme</td><td>Ampère</td><td>La simetría permite hallar la corriente encerrada.</td></tr>
+<tr><td>Solenoide largo</td><td>Ampère</td><td>La simetría permite aproximar B uniforme en el interior.</td></tr></table>
+<div class="callout"><b>Criterio práctico:</b> primero dibuja la geometría y analiza la simetría. Si puedes justificar que B es tangente y constante en una trayectoria cerrada, Ampère suele ser la vía más rápida. Si no, considera Biot-Savart.</div>
+<aside class="notes">No presentar Ampère como una ley que solo sirve para hilos. Su utilidad depende de la simetría. La espira circular también tiene simetría, pero la trayectoria amperiana no permite extraer B de la integral en todo el recorrido de manera tan directa.</aside></section>
+<section><h2>Práctica guiada · intenta antes de revelar</h2>
+<div class="grid">
+<div class="card"><h3>Problema A · Hilo recto</h3><p>Un hilo muy largo transporta 8.0 A. Calcula B a 4.0 cm del eje.</p><button onclick="toggleSolution('solA',this)">Mostrar solución</button><div id="solA" class="hidden-solution" hidden>\(r=0.040\,\mathrm m\).<br>\(B=\mu_0I/(2\pi r)=4.0\times10^{-5}\,\mathrm T\).<br>El campo es tangente a una circunferencia alrededor del hilo.</div></div>
+<div class="card"><h3>Problema B · Espira circular</h3><p>Una espira de radio 6.0 cm conduce 3.0 A. Determina B en su centro.</p><button onclick="toggleSolution('solB',this)">Mostrar solución</button><div id="solB" class="hidden-solution" hidden>\(R=0.060\,\mathrm m\).<br>\(B=\mu_0I/(2R)=3.14\times10^{-5}\,\mathrm T\).<br>La dirección es perpendicular al plano de la espira.</div></div>
+<div class="card"><h3>Problema C · Conductor macizo</h3><p>Un conductor de radio 2.0 cm lleva 5.0 A uniformemente. Halla B a 1.0 cm del eje.</p><button onclick="toggleSolution('solC',this)">Mostrar solución</button><div id="solC" class="hidden-solution" hidden>Como \(r\lt R\), usamos \(B=\mu_0Ir/(2\pi R^2)\).<br>\(B=2.5\times10^{-5}\,\mathrm T\).</div></div>
+<div class="card"><h3>Problema D · Solenoide</h3><p>Una bobina tiene 600 vueltas en 0.40 m y conduce 1.2 A. Estima B en el centro.</p><button onclick="toggleSolution('solD',this)">Mostrar solución</button><div id="solD" class="hidden-solution" hidden>\(n=600/0.40=1500\,\mathrm{m^{-1}}\).<br>\(B=\mu_0nI=2.26\times10^{-3}\,\mathrm T\).</div></div>
+</div>
+<aside class="notes">Dar 5–7 minutos. Los problemas son nuevos y no reproducen los enunciados de la evaluación. Pedir que escriban datos, identifiquen la región y justifiquen la ecuación elegida.</aside></section>
+<section><h2>Errores frecuentes que debemos evitar</h2>
+<ul><li>Usar centímetros directamente en expresiones SI sin convertirlos a metros.</li><li>Confundir el radio del conductor \(R\) con la distancia radial del punto \(r\).</li><li>Aplicar la expresión exterior \(B=\mu_0I/(2\pi r)\) a un punto interior cuando la corriente está distribuida uniformemente.</li><li>Suponer que la ley de Ampère permite sacar B de cualquier integral sin comprobar la simetría.</li><li>Confundir la dirección del campo magnético con la dirección de la fuerza sobre una carga móvil.</li><li>Olvidar que el sentido de B cambia cuando se invierte el sentido de la corriente.</li></ul>
+<div class="callout">Antes de aceptar un resultado, comprueba: unidades, región geométrica, sentido físico y dependencia con I y r.</div>
+<aside class="notes">Usar esta diapositiva como lista de verificación para la resolución de ejercicios. Recuperar las preguntas del examen como tipos de competencia, no repetirlas.</aside></section>
+<section><h2>Resumen conceptual</h2>
+<div class="eq">\[\boxed{d\vec B=\frac{\mu_0}{4\pi}\frac{I\,d\vec\ell\times\hat r}{r^2}}\qquad\boxed{\oint_C\vec B\cdot d\vec\ell=\mu_0I_{\rm enc}}\]</div>
+<ul><li><b>Biot-Savart:</b> calcula el campo sumando las contribuciones vectoriales de los elementos de corriente.</li><li><b>Hilo recto largo:</b> \(B=\mu_0I/(2\pi r)\).</li><li><b>Espira circular:</b> en el centro, \(B=\mu_0I/(2R)\).</li><li><b>Conductor cilíndrico uniforme:</b> dentro, B crece linealmente con r; fuera, disminuye como 1/r.</li><li><b>Solenoide largo:</b> el campo interior es aproximadamente uniforme y vale \(B=\mu_0(N/L)I\).</li></ul>
+<div class="callout">Idea central: la corriente determina el campo magnético. La geometría y la simetría nos dicen cómo calcularlo de la manera más eficiente.</div>
+<aside class="notes">Cierre (3 min). Pedir a un estudiante que resuma cuándo usaría cada ley. Conectar con aplicaciones de ingeniería: electroimanes, inductores, actuadores, máquinas eléctricas y sensores.</aside></section>
+<section><h2>Para estudiar después de clase</h2>
+<p>Responde explicando el razonamiento físico y mostrando las unidades:</p>
+<ol><li>Explica por qué las líneas del campo magnético alrededor de un hilo recto son circunferencias y cómo cambia su sentido si se invierte la corriente.</li><li>Compara Biot-Savart y Ampère. ¿Por qué ambas conducen al mismo campo para un hilo recto largo, aunque sus procedimientos sean diferentes?</li><li>En un conductor cilíndrico con corriente uniforme, explica por qué el campo crece dentro y disminuye fuera. ¿Qué ocurre exactamente en la superficie?</li><li>¿Qué condición geométrica permite usar \(B=\mu_0NI/L\) para un solenoide? ¿Qué cambia cerca de sus extremos?</li><li>Un solenoide conserva su longitud y duplica N e I. ¿Por qué factor cambia el campo magnético ideal?</li></ol>
+<div class="callout">Ruta de resolución: dibuja la geometría → identifica la región → elige la ley → convierte a SI → calcula → determina la dirección → interpreta.</div>
+<aside class="notes">Estas preguntas son para repaso y no corresponden literalmente a las preguntas del examen. Recomendar que los estudiantes practiquen la regla de la mano derecha con dibujos propios.</aside></section>
+</div></div>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script><script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/notes/notes.js"></script>
+<script>
+Reveal.initialize({hash:true,slideNumber:'c/t',progress:true,controls:true,center:false,transition:'slide',plugins:[RevealNotes],width:1280,height:720,margin:0.02});
+function fmtSci(x,d=2){if(!isFinite(x))return '—';if(x===0)return '0';const a=x.toExponential(d).split('e');const sup=String(a[1]).replace('-','⁻').replace('+','').replace(/\d/g,c=>'⁰¹²³⁴⁵⁶⁷⁸⁹'[Number(c)]);return a[0]+' × 10'+sup;}
+function mixWireColor(t){const stops=[{p:0,c:[23,48,76]},{p:.35,c:[83,199,242]},{p:.68,c:[245,181,68]},{p:1,c:[240,91,85]}];let a=stops[0],b=stops[stops.length-1];for(let j=0;j<stops.length-1;j++){if(t>=stops[j].p&&t<=stops[j+1].p){a=stops[j];b=stops[j+1];break;}}const u=Math.max(0,Math.min(1,(t-a.p)/(b.p-a.p)));return `rgb(${a.c.map((v,j)=>Math.round(v+(b.c[j]-v)*u)).join(',')})`;}
+function updateWire(){
+ const I=+document.getElementById('wireI').value;
+ const rCm=+document.getElementById('wireR').value;
+ const r=rCm/100;
+ const B=4*Math.PI*1e-7*I/(2*Math.PI*r);
+ document.getElementById('wireIVal').textContent=I.toFixed(1)+' A';
+ document.getElementById('wireRVal').textContent=rCm.toFixed(1)+' cm';
+ document.getElementById('wireB').textContent=fmtSci(B,2)+' T';
+ document.getElementById('wireCompare').textContent=`B aumenta si aumenta I y disminuye si aumenta r. Con I = ${I.toFixed(1)} A y r = ${rCm.toFixed(1)} cm, el campo vale ${fmtSci(B,2)} T.`;
+ // La escala cromática depende del valor físico calculado de B.
+ const Bmin=4*Math.PI*1e-7*.5/(2*Math.PI*.10);
+ const Bmax=4*Math.PI*1e-7*15/(2*Math.PI*.005);
+ const t=Math.max(0,Math.min(1,(Math.log10(B)-Math.log10(Bmin))/(Math.log10(Bmax)-Math.log10(Bmin))));
+ const color=mixWireColor(t);
+ // Un único círculo: su tamaño representa la distancia radial r.
+ const rx=28+(rCm-.5)/(10-.5)*112;
+ const ry=rx*.40;
+ const x=215+rx;
+ const ring=document.getElementById('wireRing');
+ ring.setAttribute('rx',rx.toFixed(1));
+ ring.setAttribute('ry',ry.toFixed(1));
+ ring.setAttribute('stroke',color);
+ ring.setAttribute('stroke-width',(2.5+2.5*t).toFixed(2));
+ const observer=document.getElementById('wireObserver');
+ const halo=document.getElementById('wireObserverHalo');
+ observer.setAttribute('cx',x); halo.setAttribute('cx',x);
+ observer.setAttribute('fill',color); halo.setAttribute('fill',color);
+ document.getElementById('wireRadiusLine').setAttribute('d',`M215 122 H${x}`);
+ const label=document.getElementById('wireRLabel');
+ label.setAttribute('x',Math.min(x-45,365));
+ label.setAttribute('y',(122-ry-9).toFixed(1));
+ label.textContent=`r = ${rCm.toFixed(1)} cm`;
+}
+['wireI','wireR'].forEach(id=>document.getElementById(id).addEventListener('input',updateWire));
+updateWire();
+function updateCylinder(){const I=+document.getElementById('cylI').value,R=+document.getElementById('cylR').value/100,r=+document.getElementById('cylr').value/100;const inside=r<R||Math.abs(r-R)<1e-10;const Ienc=inside?I*(r*r)/(R*R):I;const B=inside?4*Math.PI*1e-7*I*r/(2*Math.PI*R*R):4*Math.PI*1e-7*I/(2*Math.PI*Math.max(r,1e-9));document.getElementById('cylIVal').textContent=I.toFixed(1)+' A';document.getElementById('cylRVal').textContent=(R*100).toFixed(1)+' cm';document.getElementById('cylrVal').textContent=(r*100).toFixed(1)+' cm';document.getElementById('cylRegion').textContent=inside?'Interior (r ≤ R)':'Exterior (r > R)';document.getElementById('cylEnc').textContent=Ienc.toFixed(2)+' A';document.getElementById('cylB').textContent=fmtSci(B,2)+' T';drawCylinder(I,R,r);}
+function drawCylinder(I,R,r){const c=document.getElementById('cylPlot'),ctx=c.getContext('2d'),w=c.width,h=c.height;ctx.clearRect(0,0,w,h);const maxR=Math.max(0.06,R*2.5),maxB=4*Math.PI*1e-7*I/(2*Math.PI*R)*1.25;const x0=55,y0=h-38,gw=w-80,gh=h-65;ctx.strokeStyle='#9bb0c5';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(x0,y0-gh);ctx.lineTo(x0,y0);ctx.lineTo(x0+gw,y0);ctx.stroke();ctx.fillStyle='#F4F7FC';ctx.font='16px Arial';ctx.fillText('B (T)',8,22);ctx.fillText('r (cm)',w-75,h-8);ctx.strokeStyle='#53C7F2';ctx.lineWidth=4;ctx.beginPath();for(let j=0;j<=160;j++){let rr=maxR*j/160;let bb=rr<=R?4*Math.PI*1e-7*I*rr/(2*Math.PI*R*R):4*Math.PI*1e-7*I/(2*Math.PI*rr);let x=x0+gw*rr/maxR,y=y0-gh*bb/maxB;if(j===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);}ctx.stroke();let xp=x0+gw*r/maxR,bp=r<=R?4*Math.PI*1e-7*I*r/(2*Math.PI*R*R):4*Math.PI*1e-7*I/(2*Math.PI*r);let yp=y0-gh*bp/maxB;ctx.fillStyle='#F5B544';ctx.beginPath();ctx.arc(xp,yp,7,0,Math.PI*2);ctx.fill();let xR=x0+gw*R/maxR;ctx.strokeStyle='#F5B544';ctx.setLineDash([7,5]);ctx.beginPath();ctx.moveTo(xR,y0-gh);ctx.lineTo(xR,y0);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle='#F5B544';ctx.fillText('R',xR+6,y0-8);ctx.fillStyle='#c7d7e7';ctx.fillText('0',x0-18,y0+5);ctx.fillText((maxR*100).toFixed(1),x0+gw-20,y0+22);}
+['cylI','cylR','cylr'].forEach(id=>document.getElementById(id).addEventListener('input',updateCylinder));updateCylinder();
+function updateSolenoid(){const N=+document.getElementById('solN').value,L=+document.getElementById('solL').value,I=+document.getElementById('solI').value,n=N/L,B=4*Math.PI*1e-7*n*I;document.getElementById('solNVal').textContent=N;document.getElementById('solLVal').textContent=L.toFixed(2)+' m';document.getElementById('solIVal').textContent=I.toFixed(2)+' A';document.getElementById('soln').textContent=Math.round(n)+' vueltas/m';document.getElementById('solB').textContent=(B*1e3).toFixed(3)+' mT';const g=document.getElementById('solTurns');g.innerHTML='';const count=Math.max(8,Math.min(30,Math.round(N/35)));for(let i=0;i<count;i++){const x=75+i*(290/(count-1));const p=document.createElementNS('http://www.w3.org/2000/svg','path');p.setAttribute('d',`M ${x} 68 Q ${x+9} 125 ${x} 182`);p.setAttribute('fill','none');p.setAttribute('stroke','#F5B544');p.setAttribute('stroke-width','2.4');g.appendChild(p);}}
+['solN','solL','solI'].forEach(id=>document.getElementById(id).addEventListener('input',updateSolenoid));updateSolenoid();
+function toggleSolution(id,btn){const e=document.getElementById(id);e.hidden=!e.hidden;btn.textContent=e.hidden?'Mostrar solución':'Ocultar solución';if(!e.hidden&&window.MathJax?.typesetPromise)MathJax.typesetPromise([e]);}
+function fitSlides(){document.querySelectorAll('.reveal .slides section').forEach(s=>{s.style.fontSize='';let size=27;let n=0;while((s.scrollHeight>s.clientHeight+3||s.scrollWidth>s.clientWidth+3)&&size>19&&n<18){size*=.97;s.style.fontSize=size+'px';n++;}});}
+Reveal.on('ready',()=>{fitSlides();setTimeout(fitSlides,700);if(window.MathJax?.startup?.promise)MathJax.startup.promise.then(()=>setTimeout(fitSlides,200));});Reveal.on('slidechanged',()=>requestAnimationFrame(fitSlides));window.addEventListener('resize',()=>requestAnimationFrame(fitSlides));
+</script></body></html>
